@@ -8,7 +8,7 @@
 - Spring Boot
 - Spring Security
 - OAuth2.0 / OpenID Connect
-- Keycloak
+- Amazon Cognito
 - JWT
 - MyBatis
 - PostgreSQL
@@ -25,7 +25,7 @@
 - 日次在庫集計バッチ
 - 在庫不足商品抽出
 - 発注候補CSV出力
-- Keycloak + JWT による認証・認可
+- Amazon Cognito + JWT による認証・認可
 
 ## 起動方法
 ※後で記載
