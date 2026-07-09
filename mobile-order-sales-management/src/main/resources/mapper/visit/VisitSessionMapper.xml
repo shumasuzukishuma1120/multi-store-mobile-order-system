@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portfolio.mobileorder.visit.mapper.VisitSessionMapper">
+    <resultMap id="VisitSessionResultMap" type="com.portfolio.mobileorder.visit.model.VisitSession">
+        <id property="id" column="id"/>
+        <result property="storeId" column="store_id"/>
+        <result property="tableId" column="table_id"/>
+        <result property="visitToken" column="visit_token"/>
+        <result property="status" column="status"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="endedAt" column="ended_at"/>
+        <result property="expiresAt" column="expires_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <select id="existActiveByTableId" resultType="boolean">
+        SELECT
+            EXISTS (
+                SELECT 1
+                FROM visit_sessions
+                WHERE table_id = #{tableId}
+                  AND status = 'ACTIVE'
+            )
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO visit_sessions (
+            store_id,
+            table_id,
+            visit_token,
+            status,
+            started_at,
+            ended_at,
+            expires_at,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{storeId},
+            #{tableId},
+            #{visitToken},
+            #{status},
+            #{startedAt},
+            #{endedAt},
+            #{expiresAt},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+</mapper>

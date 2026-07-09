@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: mobile-order-postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: mobile_order_db
+      POSTGRES_USER: mobile_order_user
+      POSTGRES_PASSWORD: mobile_order_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
