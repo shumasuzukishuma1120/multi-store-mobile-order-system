@@ -27,7 +27,7 @@ public interface RestaurantTableMapper {
      * @param version 更新前バージョン
      * @return 更新件数
      */
-    int updateStatus(
+    int updateStatusByIdAndVersion(
             @Param("id") Long id,
             @Param("status") TableStatus status,
             @Param("version") Integer version

@@ -14,7 +14,6 @@
         <result property="expiresAt" column="expires_at"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <result property="deletedAt" column="deleted_at"/>
         <result property="version" column="version"/>
     </resultMap>
 
@@ -28,27 +27,28 @@
             )
     </select>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert"
+            parameterType="com.portfolio.mobileorder.visit.model.VisitSession"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
         INSERT INTO visit_sessions (
-            store_id,
-            table_id,
-            visit_token,
-            status,
-            started_at,
-            ended_at,
-            expires_at,
-            created_at,
-            updated_at
-        ) VALUES (
-            #{storeId},
-            #{tableId},
-            #{visitToken},
-            #{status},
-            #{startedAt},
-            #{endedAt},
-            #{expiresAt},
-            NOW(),
-            NOW()
+        store_id,
+        table_id,
+        visit_token,
+        status,
+        started_at,
+        ended_at,
+        expires_at
+        )
+        VALUES (
+        #{storeId},
+        #{tableId},
+        #{visitToken},
+        #{status},
+        #{startedAt},
+        #{endedAt},
+        #{expiresAt}
         )
     </insert>
 

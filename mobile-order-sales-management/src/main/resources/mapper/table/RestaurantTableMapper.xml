@@ -38,13 +38,12 @@
             AND deleted_at IS NULL
     </select>
 
-    <update id="updateStatus">
+    <update id="updateStatusByIdAndVersion">
         UPDATE
             restaurant_tables
         SET
             status = #{status},
-            updated_at = #{updatedAt},
-            updated_by = #{updatedBy},
+            updated_at = CURRENT_TIMESTAMP,
             version = version + 1
         WHERE
             id = #{id}
