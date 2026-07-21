@@ -14,7 +14,7 @@ public interface VisitSessionMapper {
      * @param tableId テーブルID
      * @return アクティブな来店セッションが存在する場合は true
      */
-    boolean existActiveByTableId(@Param("tableId") Long tableId);
+    boolean existsActiveByTableId(@Param("tableId") Long tableId);
 
     /**
      * 新しい来店セッションを挿入する。

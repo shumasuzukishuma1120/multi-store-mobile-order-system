@@ -5,18 +5,22 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 共通の例外ハンドリングを行うクラス。
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final String VALIDATION_ERROR = "VALIDATION_ERROR";
     private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-    private static final String VALIDATION_ERROR_MESSAGE = "入力値が不正です";
-    private static final String INTERNAL_SERVER_ERROR_MESSAGE = "予期しないエラーが発生しました";
+    private static final String VALIDATION_ERROR_MESSAGE = "入力値が不正です。";
+    private static final String INTERNAL_SERVER_ERROR_MESSAGE = "予期しないエラーが発生しました。";
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
@@ -52,5 +56,18 @@ public class GlobalExceptionHandler {
 
         ErrorResponse response = new ErrorResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException ex
+    ) {
+        log.warn("Request body is invalid JSON. type={}", ex.getClass().getName());
+
+        ErrorResponse response = new ErrorResponse(
+                "VALIDATION_ERROR",
+                "リクエストボディの形式が不正です。"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

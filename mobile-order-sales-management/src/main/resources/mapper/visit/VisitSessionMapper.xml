@@ -17,7 +17,7 @@
         <result property="version" column="version"/>
     </resultMap>
 
-    <select id="existActiveByTableId" resultType="boolean">
+    <select id="existsActiveByTableId" resultType="boolean">
         SELECT
             EXISTS (
                 SELECT 1
