@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mobile-order-sales-management.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mobile-order-sales-management.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mobile-order-sales-management.test.iml" filepath="$PROJECT_DIR$/.idea/modules/mobile-order-sales-management.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/multi-store-mobile-order-system.iml" filepath="$PROJECT_DIR$/.idea/multi-store-mobile-order-system.iml" />
     </modules>
   </component>
