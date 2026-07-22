@@ -12,11 +12,9 @@ import com.portfolio.mobileorder.table.model.TableStatus;
 import com.portfolio.mobileorder.visit.mapper.VisitSessionMapper;
 import com.portfolio.mobileorder.visit.model.VisitSession;
 import com.portfolio.mobileorder.visit.model.VisitSessionStatus;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * 顧客がテーブルにアクセスするための情報を検証するための実装クラス。
@@ -27,13 +25,13 @@ public class CustomerTableAccessValidatorImpl implements CustomerTableAccessVali
     private final RestaurantTableMapper restaurantTableMapper;
     private final VisitSessionMapper visitSessionMapper;
 
-    @Override
     /**
      * 顧客がテーブルにアクセスするための情報を検証するメソッド。
      * @param qrToken QRコードトークン
      * @param visitToken 訪問トークン
      * @return 顧客のテーブルアクセス情報
      */
+    @Override
     public CustomerTableAccess validate(String qrToken, String visitToken) {
 
         RestaurantTable restaurantTable = restaurantTableMapper.findByQrToken(qrToken)
@@ -56,12 +54,10 @@ public class CustomerTableAccessValidatorImpl implements CustomerTableAccessVali
             throw new ConflictException(ErrorCodeConst.VISIT_SESSION_EXPIRED, "指定された来店セッションは期限切れです。");
         }
 
-        CustomerTableAccess customerTableAccess = new CustomerTableAccess(
-                restaurantTable.getId(),
+        return new CustomerTableAccess(
                 restaurantTable.getStoreId(),
+                restaurantTable.getId(),
                 visitSession.getId()
         );
-
-        return customerTableAccess;
     }
 }
