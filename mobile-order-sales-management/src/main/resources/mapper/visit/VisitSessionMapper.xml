@@ -27,6 +27,26 @@
             )
     </select>
 
+    <select id="findByTableIdAndVisitToken" resultMap="VisitSessionResultMap">
+        SELECT
+            id,
+            store_id,
+            table_id,
+            visit_token,
+            status,
+            started_at,
+            ended_at,
+            expires_at,
+            created_at,
+            updated_at,
+            version
+        FROM
+            visit_sessions
+        WHERE
+            table_id = #{tableId}
+            AND visit_token = #{visitToken}
+    </select>
+
     <insert id="insert"
             parameterType="com.portfolio.mobileorder.visit.model.VisitSession"
             useGeneratedKeys="true"

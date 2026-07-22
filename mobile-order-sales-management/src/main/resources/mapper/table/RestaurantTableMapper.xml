@@ -38,6 +38,26 @@
             AND deleted_at IS NULL
     </select>
 
+    <select id="findByQrToken" resultMap="RestaurantTableResultMap">
+            SELECT
+                id,
+                store_id,
+                table_number,
+                status,
+                qr_token,
+                created_at,
+                created_by,
+                updated_at,
+                updated_by,
+                deleted_at,
+                version
+            FROM
+                restaurant_tables
+            WHERE
+                qr_token = #{qrToken}
+                AND deleted_at IS NULL
+    </select>
+
     <update id="updateStatusByIdAndVersion">
         UPDATE
             restaurant_tables

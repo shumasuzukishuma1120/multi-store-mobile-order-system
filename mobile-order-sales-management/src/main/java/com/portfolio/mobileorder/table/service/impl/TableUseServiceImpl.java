@@ -1,6 +1,7 @@
 package com.portfolio.mobileorder.table.service.impl;
 
 import com.portfolio.mobileorder.common.exception.ConflictException;
+import com.portfolio.mobileorder.common.exception.ErrorCodeConst;
 import com.portfolio.mobileorder.common.exception.ForbiddenException;
 import com.portfolio.mobileorder.common.exception.NotFoundException;
 import com.portfolio.mobileorder.table.dto.StartTableUseRequest;
@@ -45,20 +46,20 @@ public class TableUseServiceImpl implements TableUseService {
     public StartTableUseResponse startTableUse(Long storeId, Long tableId, StartTableUseRequest request) {
 
         RestaurantTable restaurantTable = restaurantTableMapper.findById(tableId)
-                .orElseThrow(() -> new NotFoundException("TABLE_NOT_FOUND", "指定されたテーブルが存在しません。"));
+                .orElseThrow(() -> new NotFoundException(ErrorCodeConst.TABLE_NOT_FOUND, "指定されたテーブルが存在しません。"));
 
         if (!storeId.equals(restaurantTable.getStoreId())) {
-            throw new ForbiddenException("STORE_ACCESS_DENIED", "指定されたテーブルにアクセスする権限がありません。");
+            throw new ForbiddenException(ErrorCodeConst.STORE_ACCESS_DENIED, "指定されたテーブルにアクセスする権限がありません。");
         }
 
         if (restaurantTable.getStatus() != TableStatus.AVAILABLE) {
-            throw new ConflictException("TABLE_NOT_AVAILABLE", "指定されたテーブルは使用中です。");
+            throw new ConflictException(ErrorCodeConst.TABLE_NOT_AVAILABLE, "指定されたテーブルは使用中です。");
         }
 
         boolean existsActiveByTableId = visitSessionMapper.existsActiveByTableId(tableId);
 
         if (existsActiveByTableId) {
-            throw new ConflictException("ACTIVE_VISIT_SESSION_EXISTS", "指定されたテーブルにはアクティブな来店セッションが存在します。");
+            throw new ConflictException(ErrorCodeConst.ACTIVE_VISIT_SESSION_EXISTS, "指定されたテーブルにはアクティブな来店セッションが存在します。");
         }
 
         // 楽観ロックにより、画面表示時点のversionと一致する場合のみ更新する。
@@ -68,7 +69,7 @@ public class TableUseServiceImpl implements TableUseService {
         //更新件数が0なら楽観ロック競合として409。
         if (updateCount == 0) {
             throw new ConflictException(
-                    "OPTIMISTIC_LOCK_CONFLICT", "テーブル情報がほかのユーザーにより更新されています。"
+                    ErrorCodeConst.OPTIMISTIC_LOCK_CONFLICT, "テーブル情報がほかのユーザーにより更新されています。"
             );
         }
 

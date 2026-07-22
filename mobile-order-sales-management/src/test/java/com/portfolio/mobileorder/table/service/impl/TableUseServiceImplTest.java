@@ -47,7 +47,7 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_正常系_AVAILABLEテーブルなら来店セッションを作成してレスポンスを返す")
         void startTableUse_availableTable_createsVisitSessionAndReturnsResponse() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.AVAILABLE, 0)
                     ), Optional.of(restaurantTable(1L, 1L, TableStatus.OCCUPIED, 1)));
@@ -61,7 +61,7 @@ class TableUseServiceImplTest {
                 return 1;
             }).when(visitSessionMapper).insert(any(VisitSession.class));
 
-            //when
+            //act
             StartTableUseResponse response = tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0));
 
             //then
@@ -110,10 +110,10 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系01_存在しないtableIdを指定した場合、NotFoundExceptionが発生することを確認する")
         void startTableUse_nonExistentTableId_throwsNotFoundException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(Optional.empty());
 
-            //when&then
+            //act&then
             NotFoundException exception = assertThrows(
                     NotFoundException.class,
                     () -> tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0))
@@ -130,11 +130,11 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系02_storeIdが一致しないテーブルを指定した場合、ForbiddenExceptionが発生することを確認する")
         void startTableUse_forbiddenException_throwsForbiddenException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.OCCUPIED, 0)));
 
-            //when & then
+            //act & assert
             ForbiddenException exception = assertThrows(
                     ForbiddenException.class,
                     () -> tableUseService.startTableUse(999L, 1L, new StartTableUseRequest(0))
@@ -151,11 +151,11 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系03_すでにOCCUPIEDのテーブルを指定した場合、ConflictExceptionが発生することを確認する")
         void startTableUse_occupiedTable_throwsConflictException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.OCCUPIED, 0)));
 
-            //when & then
+            //act & assert
             ConflictException exception = assertThrows(
                     ConflictException.class,
                     () -> tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0)));
@@ -170,12 +170,12 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系04_ACTIVEな来店セッションが存在するテーブルを指定した場合、ConflictExceptionが発生することを確認する")
         void startTableUse_activeVisitSessionExists_throwsConflictException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.AVAILABLE, 0)));
             when(visitSessionMapper.existsActiveByTableId(1L)).thenReturn(true);
 
-            //when & then
+            //act & assert
             ConflictException exception = assertThrows(
                     ConflictException.class,
                     () -> tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0)));
@@ -190,13 +190,13 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系05_versionが一致しないテーブルを指定した場合、ConflictExceptionが発生することを確認する")
         void startTableUse_versionConflict_throwsConflictException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.AVAILABLE, 0)));
             when(visitSessionMapper.existsActiveByTableId(1L)).thenReturn(false);
             when(restaurantTableMapper.updateStatusByIdAndVersion(1L, TableStatus.OCCUPIED, 0)).thenReturn(0);
 
-            //when & then
+            //act & assert
             ConflictException exception = assertThrows(
                     ConflictException.class,
                     () -> tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0))
@@ -233,14 +233,14 @@ class TableUseServiceImplTest {
         @Test
         @DisplayName("startTableUse_異常系06_更新後テーブルを再取得できない場合、IllegalStateExceptionが発生する")
         void startTableUse_afterUpdateTableNotFound_throwsIllegalStateException() {
-            //given
+            //arrange
             when(restaurantTableMapper.findById(1L)).thenReturn(
                     Optional.of(restaurantTable(1L, 1L, TableStatus.AVAILABLE, 0)),
                     Optional.empty());
             when(visitSessionMapper.existsActiveByTableId(1L)).thenReturn(false);
             when(restaurantTableMapper.updateStatusByIdAndVersion(1L, TableStatus.OCCUPIED, 0)).thenReturn(1);
 
-            //when & then
+            //act & assert
             IllegalStateException exception = assertThrows(
                     IllegalStateException.class,
                     () -> tableUseService.startTableUse(1L, 1L, new StartTableUseRequest(0)));

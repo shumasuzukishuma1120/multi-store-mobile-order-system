@@ -49,7 +49,7 @@ class TableUseControllerTest {
         @Test
         @DisplayName("startTableUse_正常系_@PostMappingでテーブル利用開始を実行した場合、201とレスポンスJSONを返す")
         void startTableUse_returnsCreatedAndResponseJson() throws Exception {
-            // given
+            //arrange
             LocalDateTime startedAt = LocalDateTime.of(2026, 1, 1, 10, 0);
             LocalDateTime expiresAt = LocalDateTime.of(2026, 1, 1, 16, 0);
 
@@ -77,7 +77,7 @@ class TableUseControllerTest {
                     any(StartTableUseRequest.class)
             )).thenReturn(response);
 
-            // when & then
+            //act & assert
             mockMvc.perform(post("/stores/{storeId}/tables/{tableId}/visit-sessions", 1L, 1L)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
