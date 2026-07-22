@@ -59,5 +59,6 @@ public class CustomerTableAccessValidatorImpl implements CustomerTableAccessVali
                 restaurantTable.getId(),
                 visitSession.getId()
         );
+
     }
 }
