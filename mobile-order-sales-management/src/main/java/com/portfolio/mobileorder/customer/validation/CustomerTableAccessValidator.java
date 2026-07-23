@@ -9,6 +9,7 @@ public interface CustomerTableAccessValidator {
 
     /**
      * 顧客がテーブルにアクセスするための情報を検証するメソッド。
+     *
      * @param qrToken QRコードトークン
      * @param visitToken 訪問トークン
      * @return 顧客のテーブルアクセス情報

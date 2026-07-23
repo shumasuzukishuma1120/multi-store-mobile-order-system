@@ -154,8 +154,8 @@ MenuCategory {
 ##### 異常系テストケース
 
 1. qrTokenが紐づくテーブルが存在しない場合、404(TABLE_NOT_FOUND)エラーを返す
-2. visitTokenが対象テーブルに紐づかない場合、403(VISIT_SESSION_ACCESS_DENIED)エラーを返す
-3. テーブル状態がOCCUPIEDではない場合、409(TABLE_NOT_OCCUPIED)エラーを返す
+2. テーブル状態がOCCUPIEDではない場合、409(TABLE_NOT_OCCUPIED)エラーを返す
+3. visitTokenが対象テーブルに紐づかない場合、403(VISIT_SESSION_ACCESS_DENIED)エラーを返す
 4. 来店セッションがACTIVEではない場合、409(VISIT_SESSION_NOT_ACTIVE)エラーを返す
 5. 来店セッションが期限切れの場合、409(VISIT_SESSION_EXPIRED)エラーを返す
 

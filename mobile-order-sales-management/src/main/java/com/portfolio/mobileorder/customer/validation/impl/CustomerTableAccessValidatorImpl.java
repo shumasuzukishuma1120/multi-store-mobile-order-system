@@ -13,12 +13,14 @@ import com.portfolio.mobileorder.visit.mapper.VisitSessionMapper;
 import com.portfolio.mobileorder.visit.model.VisitSession;
 import com.portfolio.mobileorder.visit.model.VisitSessionStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 /**
  * 顧客がテーブルにアクセスするための情報を検証するための実装クラス。
  */
+@Component
 @RequiredArgsConstructor
 public class CustomerTableAccessValidatorImpl implements CustomerTableAccessValidator {
 
@@ -27,22 +29,23 @@ public class CustomerTableAccessValidatorImpl implements CustomerTableAccessVali
 
     /**
      * 顧客がテーブルにアクセスするための情報を検証するメソッド。
+     *
      * @param qrToken QRコードトークン
-     * @param visitToken 訪問トークン
+     * @param visitToken 来店トークン
      * @return 顧客のテーブルアクセス情報
      */
     @Override
     public CustomerTableAccess validate(String qrToken, String visitToken) {
 
         RestaurantTable restaurantTable = restaurantTableMapper.findByQrToken(qrToken)
-                .orElseThrow(() -> new NotFoundException("TABLE_NOT_FOUND", "指定されたテーブルが存在しません。"));
+                .orElseThrow(() -> new NotFoundException(ErrorCodeConst.TABLE_NOT_FOUND, "指定されたテーブルが存在しません。"));
 
         if (restaurantTable.getStatus() != TableStatus.OCCUPIED) {
             throw new ConflictException(ErrorCodeConst.TABLE_NOT_OCCUPIED, "指定されたテーブルは使用中ではありません。");
         }
 
         VisitSession visitSession = visitSessionMapper.findByTableIdAndVisitToken(restaurantTable.getId(), visitToken)
-                .orElseThrow(() -> new ForbiddenException(ErrorCodeConst.VISIT_SESSION_ACCESS_DENIED, "指定された訪問トークンは無効です。"));
+                .orElseThrow(() -> new ForbiddenException(ErrorCodeConst.VISIT_SESSION_ACCESS_DENIED, "注文権限がありません。"));
 
         if (visitSession.getStatus() != VisitSessionStatus.ACTIVE) {
             throw new ConflictException(ErrorCodeConst.VISIT_SESSION_NOT_ACTIVE, "指定された来店セッションはアクティブではありません。");

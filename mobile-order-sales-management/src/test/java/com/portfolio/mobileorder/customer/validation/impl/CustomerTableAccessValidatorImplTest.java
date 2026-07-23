@@ -87,13 +87,14 @@ class CustomerTableAccessValidatorImplTest {
 
         // act & assert
         NotFoundException exception = assertThrows(
-                NotFoundException.class,() -> customerTableAccessValidator.validate("qr-token", "visit-token"));
+                NotFoundException.class, () -> customerTableAccessValidator.validate("qr-token", "visit-token"));
 
         assertEquals("TABLE_NOT_FOUND", exception.getErrorCode());
 
         verify(restaurantTableMapper).findByQrToken("qr-token");
         verify(visitSessionMapper, never())
-                .findByTableIdAndVisitToken(anyLong(), anyString());    }
+                .findByTableIdAndVisitToken(anyLong(), anyString());
+    }
 
     @Test
     @DisplayName("validate_異常系02_テーブル状態がOCCUPIEDではない場合、409(TABLE_NOT_OCCUPIED)エラーを返す")
@@ -109,7 +110,7 @@ class CustomerTableAccessValidatorImplTest {
 
         // act & assert
         ConflictException exception = assertThrows(
-                ConflictException.class,() -> customerTableAccessValidator.validate("qr-token", "visit-token"));
+                ConflictException.class, () -> customerTableAccessValidator.validate("qr-token", "visit-token"));
 
         assertEquals("TABLE_NOT_OCCUPIED", exception.getErrorCode());
         verify(restaurantTableMapper).findByQrToken("qr-token");
@@ -132,7 +133,7 @@ class CustomerTableAccessValidatorImplTest {
 
         // act & assert
         ForbiddenException exception = assertThrows(
-                ForbiddenException.class,() -> customerTableAccessValidator.validate("qr-token", "visit-token"));
+                ForbiddenException.class, () -> customerTableAccessValidator.validate("qr-token", "visit-token"));
         assertEquals("VISIT_SESSION_ACCESS_DENIED", exception.getErrorCode());
 
         verify(restaurantTableMapper).findByQrToken("qr-token");
@@ -166,7 +167,7 @@ class CustomerTableAccessValidatorImplTest {
 
         // act & assert
         ConflictException exception = assertThrows(
-                ConflictException.class,() -> customerTableAccessValidator.validate("qr-token", "visit-token"));
+                ConflictException.class, () -> customerTableAccessValidator.validate("qr-token", "visit-token"));
 
         assertEquals("VISIT_SESSION_NOT_ACTIVE", exception.getErrorCode());
 
@@ -201,7 +202,7 @@ class CustomerTableAccessValidatorImplTest {
 
         // act & assert
         ConflictException exception = assertThrows(
-                ConflictException.class,() -> customerTableAccessValidator.validate("qr-token", "visit-token"));
+                ConflictException.class, () -> customerTableAccessValidator.validate("qr-token", "visit-token"));
         assertEquals("VISIT_SESSION_EXPIRED", exception.getErrorCode());
         verify(restaurantTableMapper).findByQrToken("qr-token");
         verify(visitSessionMapper).findByTableIdAndVisitToken(1L, "visit-token");

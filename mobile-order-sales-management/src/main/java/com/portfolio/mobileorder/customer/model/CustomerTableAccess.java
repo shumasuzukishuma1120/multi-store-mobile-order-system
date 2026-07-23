@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CustomerTableAccess {
-    Long storeId;
-    Long tableId;
-    Long visitSessionId;
+    private final Long storeId;
+    private final Long tableId;
+    private final Long visitSessionId;
 }
