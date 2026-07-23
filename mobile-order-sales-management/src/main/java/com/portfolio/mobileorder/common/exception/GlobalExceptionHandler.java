@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,11 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final String VALIDATION_ERROR = "VALIDATION_ERROR";
-    private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-    private static final String VALIDATION_ERROR_MESSAGE = "入力値が不正です。";
-    private static final String INTERNAL_SERVER_ERROR_MESSAGE = "予期しないエラーが発生しました。";
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
@@ -38,7 +34,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.warn("Validation exception occurred. type={}", ex.getClass().getSimpleName());
 
-        ErrorResponse response = new ErrorResponse(VALIDATION_ERROR, VALIDATION_ERROR_MESSAGE);
+        ErrorResponse response = new ErrorResponse(ErrorCodeConst.VALIDATION_ERROR, "入力値が不正です。");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -46,16 +42,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         log.warn("Validation exception occurred. type={}", ex.getClass().getSimpleName());
 
-        ErrorResponse response = new ErrorResponse(VALIDATION_ERROR, VALIDATION_ERROR_MESSAGE);
+        ErrorResponse response = new ErrorResponse(ErrorCodeConst.VALIDATION_ERROR, "入力値が不正です。");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        log.error("Unexpected exception occurred. type={}", ex.getClass().getName(), ex);
-
-        ErrorResponse response = new ErrorResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -65,9 +53,29 @@ public class GlobalExceptionHandler {
         log.warn("Request body is invalid JSON. type={}", ex.getClass().getName());
 
         ErrorResponse response = new ErrorResponse(
-                "VALIDATION_ERROR",
+                ErrorCodeConst.VALIDATION_ERROR,
                 "リクエストボディの形式が不正です。"
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(
+            MissingRequestHeaderException ex) {
+        log.warn("Missing request header exception occurred. type={}", ex.getClass().getName());
+
+        ErrorResponse response = new ErrorResponse(
+                ErrorCodeConst.VALIDATION_ERROR,
+                "必須ヘッダーが指定されていません。"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        log.error("Unexpected exception occurred. type={}", ex.getClass().getName(), ex);
+
+        ErrorResponse response = new ErrorResponse(ErrorCodeConst.INTERNAL_SERVER_ERROR, "予期しないエラーが発生しました。");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

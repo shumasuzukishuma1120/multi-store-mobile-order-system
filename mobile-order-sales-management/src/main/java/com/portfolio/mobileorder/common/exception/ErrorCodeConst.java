@@ -17,5 +17,8 @@ public final class ErrorCodeConst {
     public static final String TABLE_NOT_AVAILABLE = "TABLE_NOT_AVAILABLE";
     public static final String ACTIVE_VISIT_SESSION_EXISTS = "ACTIVE_VISIT_SESSION_EXISTS";
     public static final String OPTIMISTIC_LOCK_CONFLICT = "OPTIMISTIC_LOCK_CONFLICT";
+    public static final String BAD_REQUEST = "BAD_REQUEST";
+    public static final String VALIDATION_ERROR = "VALIDATION_ERROR";
+    public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 
 }

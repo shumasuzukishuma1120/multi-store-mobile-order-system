@@ -17,22 +17,30 @@
     </resultMap>
 
     <select id="findAvailableCategoriesByStoreId" resultMap="MenuCategoryResultMap">
-        SELECT
-            id,
-            store_id,
-            name,
-            image_url,
-            created_at,
-            created_by,
-            updated_at,
-            updated_by,
-            deleted_at,
-            version
+        SELECT DISTINCT
+            c.id,
+            c.store_id,
+            c.name,
+            c.image_url,
+            c.created_at,
+            c.created_by,
+            c.updated_at,
+            c.updated_by,
+            c.deleted_at,
+            c.version
         FROM
-            menu_categories
+            menu_categories c
+        INNER JOIN
+            menus m
+        ON m.menu_category_id = c.id
+            AND m.store_id = c.store_id
+            AND m.deleted_at IS NULL
+            AND m.status = 'AVAILABLE'
         WHERE
-            store_id = #{storeId}
-            AND deleted_at IS NULL
+            c.store_id = #{storeId}
+            AND c.deleted_at IS NULL
+        ORDER BY
+            c.id ASC
     </select>
 
 </mapper>

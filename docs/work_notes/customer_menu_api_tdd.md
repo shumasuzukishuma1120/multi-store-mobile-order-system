@@ -169,3 +169,15 @@ MenuCategory {
 6. visitSession.status が ACTIVE でなければ VISIT_SESSION_NOT_ACTIVE
 7. expiresAt が現在以前なら VISIT_SESSION_EXPIRED
 8. CustomerTableAccess を返す
+    /*
+    1．引数（qrToken, visitToken）を受け取る
+    2．customerTableAccessValidatorを使用してアクセスを検証する
+    3．menuCategoryMapperを使用してカテゴリ一覧を取得する
+    4．取得したカテゴリ一覧をCustomerCategoryResponseに設定して返す
+
+    テストケース
+    1.正常系01_有効なqrTokenとvisitTokenの場合、カテゴリ一覧を返す
+    2.正常系02_有効なqrTokenとvisitTokenでカテゴリが存在しない場合、空のカテゴリ一覧を返す
+    3.異常系01_visitSessionが取得できない場合、ForbiddenExceptionを返す
+    4.異常系02_visitSessionが期限切れの場合、ConflictExceptionを返す
+     */

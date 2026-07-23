@@ -4,15 +4,15 @@ import com.portfolio.mobileorder.customer.dto.CustomerCategoryResponse;
 import com.portfolio.mobileorder.customer.model.CustomerTableAccess;
 import com.portfolio.mobileorder.customer.service.CustomerCategoryService;
 import com.portfolio.mobileorder.customer.validation.CustomerTableAccessValidator;
-import com.portfolio.mobileorder.menu.dto.Category;
 import com.portfolio.mobileorder.menu.mapper.MenuCategoryMapper;
-import com.portfolio.mobileorder.menu.model.MenuCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 来店客向けカテゴリ取得サービスの実装クラス。
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomerCategoryServiceImpl implements CustomerCategoryService {
@@ -21,26 +21,28 @@ public class CustomerCategoryServiceImpl implements CustomerCategoryService {
 
     private final CustomerTableAccessValidator customerTableAccessValidator;
 
+    /**
+     * 来店客向けカテゴリ一覧を取得する。
+     *
+     * @param qrToken QRコードトークン
+     * @param visitToken 来店トークン
+     * @return 来店客向けカテゴリ一覧のレスポンス
+     */
     @Override
     public CustomerCategoryResponse getCategoriesForCustomer(String qrToken, String visitToken) {
 
         CustomerTableAccess customerTableAccess = customerTableAccessValidator.validate(qrToken, visitToken);
 
-        List<MenuCategory> categories = new ArrayList<>();
+        List<CustomerCategoryResponse.Category> categories  =
+                menuCategoryMapper.findAvailableCategoriesByStoreId(customerTableAccess.getStoreId())
+                        .stream()
+                        .map(category -> new CustomerCategoryResponse.Category(
+                                category.getId(),
+                                category.getName(),
+                                category.getImageUrl()
+                        ))
+                        .toList();
 
-        categories = menuCategoryMapper.findAvailableCategoriesByStoreId(customerTableAccess.getStoreId());
-
-        CustomerCategoryResponse response = new CustomerCategoryResponse(new ArrayList<Category>());
-
-        for (MenuCategory category : categories){
-            Category tmp = new Category(
-                    category.getId(),
-                    category.getName(),
-                    category.getImageUrl()
-            );
-            response.getCategories().add(tmp);
-        }
-
-        return response;
+        return new CustomerCategoryResponse(categories);
     }
 }
